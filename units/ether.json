@@ -1,0 +1,103 @@
+{
+	"unit": "ether",
+	"anchor": "wei",
+	"starting_anchor_to_ether": 0.000000000000000001,
+	"values": [
+		{
+			"name": "wei",
+			"to_anchor": 1
+		},
+		{
+			"name": "kwei",
+			"to_anchor": 1000
+		},
+		{
+			"name": "ada",
+			"to_anchor": 1000
+		},
+		{
+			"name": "femtoether",
+			"to_anchor": 1000
+		},
+		{
+			"name": "mwei",
+			"to_anchor": 1000000
+		},
+		{
+			"name": "babbage",
+			"to_anchor": 1000000
+		},
+		{
+			"name": "picoether",
+			"to_anchor": 1000000
+		},
+		{
+			"name": "gwei",
+			"to_anchor": 1000000000
+		},
+		{
+			"name": "shannon",
+			"to_anchor": 1000000000
+		},
+		{
+			"name": "nanoether",
+			"to_anchor": 1000000000
+		},
+		{
+			"name": "nano",
+			"to_anchor": 1000000000
+		},
+		{
+			"name": "szabo",
+			"to_anchor": 1000000000000
+		},
+		{
+			"name": "microether",
+			"to_anchor": 1000000000000
+		},
+		{
+			"name": "micro",
+			"to_anchor": 1000000000000
+		},
+		{
+			"name": "finney",
+			"to_anchor": 1000000000000000
+		},
+		{
+			"name": "milliether",
+			"to_anchor": 1000000000000000
+		},
+		{
+			"name": "milli",
+			"to_anchor": 1000000000000000
+		},
+		{
+			"name": "ether",
+			"to_anchor": 1000000000000000000
+		},
+		{
+			"name": "kether",
+			"to_anchor": 1000000000000000000000
+		},
+		{
+			"name": "grand",
+			"to_anchor": 1000000000000000000000
+		},
+		{
+			"name": "einstein",
+			"to_anchor": 1000000000000000000000
+		},
+		{
+			"name": "mether",
+			"to_anchor": 1000000000000000000000000
+		},
+		{
+			"name": "gether",
+			"to_anchor": 1000000000000000000000000000
+		},
+		{
+			"name": "tether",
+			"to_anchor": 1000000000000000000000000000000
+		}
+	]
+}

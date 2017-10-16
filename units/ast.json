@@ -1,0 +1,15 @@
+{
+	"unit": "ast",
+	"anchor": "air",
+	"starting_anchor_to_ether": 0.0001,
+	"values": [
+		{
+			"name": "air",
+			"to_anchor": 1
+		},
+		{
+			"name": "ast",
+			"to_anchor": 10000
+		}
+	]
+}
