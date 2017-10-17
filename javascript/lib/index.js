@@ -22,7 +22,7 @@ const big = require('big.js')
 */
 class TokenUnit {
   constructor(amount, unit, options = {}) {
-    if (!amount || !unit) {
+    if (!big(amount) || !unit) {
       throw new Error("Please provide an amount and unit during construction")
     }
 
@@ -97,7 +97,7 @@ class TokenUnit {
   * @return {number} The amount of nominal units
   */
   convertToAnchor(scaleAmount, scaleUnitData) {
-    return scaleAmount * scaleUnitData.to_anchor;
+    return big(scaleAmount).times(big(scaleUnitData.to_anchor));
   }
 
   /**
@@ -112,7 +112,7 @@ class TokenUnit {
   */
   findEtherEquivalent(nominalAmount, nominalUnitData) {
     // find the Ether Equivalent of the currency right now for quick display
-    return nominalAmount * this.anchorToEther(nominalUnitData).price // until we add Oracle
+    return big(nominalAmount).times(this.anchorToEther(nominalUnitData).price) // until we add Oracle
   }
 
   /**

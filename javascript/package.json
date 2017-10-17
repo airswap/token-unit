@@ -1,13 +1,10 @@
 {
   "name": "token-unit",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Convert between token units and ether units",
-  "main": "test.js",
-  "directories": {
-    "lib": "lib"
-  },
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "author": "AirSwap.io",
   "license": "MIT",
@@ -15,5 +12,8 @@
     "big.js": "^5.0.2",
     "lodash": "^4.17.4",
     "require-all": "^2.2.0"
+  },
+  "devDependencies": {
+    "mocha": "^4.0.1"
   }
 }
