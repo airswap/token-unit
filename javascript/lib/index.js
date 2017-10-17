@@ -1,5 +1,10 @@
 /**
-* Convert between tokens units and ether units
+* TokenUnit v0.1.0
+* Convert between token units and ether units
+* (c) 2017 Airswap
+* airswap.io
+*
+* Written by Adam Link
 */
 const fs = require('fs')
 const unitDirectory = '/../../units'
@@ -9,111 +14,273 @@ const tokens = _.values(require('require-all')({
 }))
 const big = require('big.js')
 
+/**
+* TokenUnit(amount, unit)
+* @param {number} amount The number amount of tokens in the unit specified
+* @param {string} unit The unit name for the amount specified
+* @constructor
+*/
 class TokenUnit {
-  constructor(amount, unit) {
+  constructor(amount, unit, options = {}) {
     if (!amount || !unit) {
       throw new Error("Please provide an amount and unit during construction")
     }
 
-    this.unitData = this.getUnit(unit)
-    this.prettyUnit = this.unitData.name
-    this.prettyAmount = big(amount)
-    this.unit = this.unitData.anchor
-    this.amount = big(this.convertToAnchor(this.prettyAmount, this.unitData))
-    this.etherEquivalent = big(this.findEtherEquivalent(this.amount, this.unitData))
+    // The nominal unit's data
+    this.scaleAndNominalUnitData = this.getScaleAndNominalUnit(unit)
+
+    // The scaled unit data
+    this.scaledUnit = this.scaleAndNominalUnitData.name
+    this.scaledAmount = big(amount)
+
+    // The common anchor unit for this nominal measurement metric
+    this.anchorUnit = this.scaleAndNominalUnitData.anchor
+    this.anchorAmount =
+      big(this.convertToAnchor(
+        this.scaledAmount,
+        this.scaleAndNominalUnitData
+      ))
+
+    // Fill in the ether equivalent for this anchor amount
+    this.etherEquivalent =
+      big(this.findEtherEquivalent(
+        this.anchorAmount,
+        this.scaleAndNominalUnitData
+      ))
+
+    // Include quote times here if applicable
+    if (options) {
+      this.quoteFromTime = options.quoteFromTime
+      this.quoteToTime = options.quoteToTime
+    }
   }
 
-  getUnit(unit) {
+  /**
+  * getScaleAndNominalUnit(unit)
+  * Searches the unit JSON files for the unit string specified
+  * and returns information about that nominal unit and the
+  * scaled unit
+  *
+  * @param {string} unit The unit name (nominal or scale)
+  * @return {object} The unit information found in the JSON files
+  */
+  getScaleAndNominalUnit(unit) {
     if (!unit) {
       throw new Error("Please provide a unit")
     }
 
-    // Find the unit's directory and open the unit JSON structure
-    // Return the unit object for the requested unit
-    var tokenFile = _.find(tokens, { values: [ { name: unit } ] })
-    var unitData = _.find(tokenFile.values, { name: unit })
+    //
+    var nominalUnitFile = _.find(tokens, { values: [ { name: unit } ] })
+    var scaleData = _.find(nominalUnitFile.values, { name: unit })
+
+    if (!nominalUnitFile || !scaleData) {
+      throw new Error("Unsupported unit provided")
+    }
 
     return {
-      name: unitData.name,
-      to_anchor: big(unitData.to_anchor),
-      anchor: tokenFile.anchor,
-      starting_anchor_to_ether: big(tokenFile.starting_anchor_to_ether),
-      unit: tokenFile.unit
+      name: scaleData.name,
+      to_anchor: big(scaleData.to_anchor),
+      anchor: nominalUnitFile.anchor,
+      starting_anchor_to_ether: big(nominalUnitFile.starting_anchor_to_ether),
+      unit: nominalUnitFile.unit
     }
   }
 
-  convertToAnchor(amount, unitData) {
-    return amount * unitData.to_anchor;
+  /**
+  * convertToAnchor(scaleAmount, nominalUnitData)
+  * Given a scaled amount and scale unit data, scale the amount to the
+  * anchor unit for the nominal unit provided
+  *
+  * @param {number} scaleAmount The quantity of unit in the scaled unit
+  * @param {object} scaleUnitData An object with the to_anchor scaling factor
+  *     to convert the scaled unit to the nominal unit
+  * @return {number} The amount of nominal units
+  */
+  convertToAnchor(scaleAmount, scaleUnitData) {
+    return scaleAmount * scaleUnitData.to_anchor;
   }
 
-  findEtherEquivalent(amount, unitData) {
+  /**
+  * findEtherEquivalent(nominalAmount, nominalUnitData)
+  * Given the nominal amount and nominal unit data, find what this is worth
+  * in ether.
+  *
+  * @param {number} nominalAmount The quantity of nominal units
+  * @param {object} nominalUnitData An object that can be passed to the
+  *     anchorToEther() function
+  * @return {number} The amount of ether
+  */
+  findEtherEquivalent(nominalAmount, nominalUnitData) {
     // find the Ether Equivalent of the currency right now for quick display
-    return amount * this.unitAnchorToEther(unitData).price // until we add Oracle
+    return nominalAmount * this.anchorToEther(nominalUnitData).price // until we add Oracle
   }
 
-  unitAnchorToEther(unit) {
-    return {
-      price: big(unit.starting_anchor_to_ether).toString(),
-      time: Date.now()
-    }
+  /**
+  * anchorToEther(nominalUnit)
+  * Convert the nominal units to ether, based on either (currently only)
+  * the starting, JSON-pegged amount of nominal units to ether or
+  * (eventually) the exchange price provided by the passed in Exchange class
+  *
+  * @param {object} nominalUnit The object nominal unit information, likely from
+  *     getScaleAndNominalUnit()
+  * @return {object} An object with the conversion price and timestamp of the
+  *     quote provided
+  */
+  anchorToEther(nominalUnit) {
     // TODO
     // This is the function that should call the current market
     // price for the TokenUnit / ETH exchange.
-    // It should return the value of 1 Anchor Unit in terms of ETH's ether
+    // It should return the value of 1 Nominal Unit in terms of ETH's ether
     // To discuss: do we want to peg this to ether or wei?
-  }
 
-  to(unit) {
-    const toUnitData = this.getUnit(unit)
-
-    if (this.unitData.unit == toUnitData.unit) {
-      // we are just scaling the current unit
-      return {
-        amount: this.scaleUnit(this.amount, toUnitData.to_anchor),
-        name: toUnitData.name,
-        unit: toUnitData.unit
-      }
-    } else {
-      // this is a price transformation as well as scale
-      // const to_anchor_to_ether_to_wei =
-      //   this.scaleUnit(1, this.getUnit('ether').to_anchor) * this.unitAnchorToEther(toUnitData)
-      // console.log('TO ANCHOR TO ETHER TO WEI', to_anchor_to_ether_to_wei)
-      // const from_anchor_to_ether_to_wei =
-      //   this.scaleUnit(1, this.unitData.to_anchor) * this.unitAnchorToEther(this.unitData)
-      // console.log('FROM ANCHOR TO ETHER TO WEI', from_anchor_to_ether_to_wei)
-      // var anchorValue =
-      //   this.amount *
-      //   from_anchor_to_ether_to_wei /
-      //   to_anchor_to_ether_to_wei
-      var marketQuoteFrom = this.unitAnchorToEther(this.unitData)
-      var fromAmountToEther = big(this.amount).times(marketQuoteFrom.price)
-      var marketQuoteTo = this.unitAnchorToEther(toUnitData)
-      var fromEtherToTokenAnchor = big(fromAmountToEther).div(marketQuoteTo.price)
-      // console.log(this.unitAnchorToEther(toUnitData).toString())
-      // console.log(fromEtherToTokenAnchor.toString())
-
-      return {
-        amount: this.scaleUnit(fromEtherToTokenAnchor, toUnitData.to_anchor),
-        name: toUnitData.name,
-        unit: toUnitData.unit,
-        quoteFromTime: marketQuoteFrom.time,
-        quoteToTime: marketQuoteTo.time
-      }
+    return {
+      price: big(nominalUnit.starting_anchor_to_ether).toString(),
+      time: Date.now()
     }
   }
 
-  scaleUnit(amount, to_anchor) {
-    return big(amount).div(big(to_anchor)).toString()
+  /**
+  * to(unit)
+  * The workhorse of the library that converts from one scaled unit to
+  * another scaled unit, which could be across nominal units as well. We
+  * refer to scaled to scaled, within the same nominal unit, conversions
+  * as a "scaling conversion" while nominal unit conversions are called
+  * "currency conversions" since they change the token base.
+  *
+  * @param {string} unit The new scaled unit we are converting into
+  * @return {TokenUnit} The new TokenUnit provided by the operation
+  */
+  to(unit) {
+    const toUnitData = this.getScaleAndNominalUnit(unit)
+
+    if (this.scaleAndNominalUnitData.unit == toUnitData.unit) {
+      // Just a scaling conversion
+      return new TokenUnit(
+        this.scaleFromNominal(this.anchorAmount, toUnitData.to_anchor),
+        toUnitData.name
+      )
+    } else { // Currency conversion with a new nominal unit
+      const marketQuoteFrom = this.anchorToEther(this.scaleAndNominalUnitData)
+      const fromAmountToEther =
+        big(this.anchorAmount).times(marketQuoteFrom.price)
+      const marketQuoteTo = this.anchorToEther(toUnitData)
+      const fromEtherToTokenAnchor =
+        big(fromAmountToEther).div(marketQuoteTo.price)
+
+      return new TokenUnit(
+        this.scaleFromNominal(fromEtherToTokenAnchor, toUnitData.to_anchor),
+        toUnitData.name,
+        {
+          quoteFromTime: marketQuoteFrom.time,
+          quoteToTime: marketQuoteTo.time
+        }
+      )
+    }
   }
 
+  /**
+  * scaleFromNominal(nominalAmount, to_anchor)
+  * Given a nominal quantity and a scaling factor, scale the nominal units
+  * to the new scaled amount according to the to_anchor factor
+  *
+  * @param {number} nominalAmount The quantity of nominal units
+  * @param {number} to_anchor The conversion factor of nominal to the new
+  *     scaled unit amount
+  * @return {number} The new quantity in scaled units
+  */
+  scaleFromNominal(nominalAmount, to_anchor) {
+    return big(nominalAmount).div(big(to_anchor)).toString()
+  }
+
+  /**
+  * add(tokenUnit)
+  * Add a TokenUnit to the base TokenUnit and return a new instance of TokenUnit
+  *
+  * @param {TokenUnit} tokenUnit The TokenUnit to add to the base
+  * @return {TokenUnit} A new instance of TokenUnit with the result of the add
+  */
+  add(tokenUnit) {
+    if (!tokenUnit instanceof TokenUnit) {
+      throw new Error("Argument passed in must be a TokenUnit type")
+    }
+
+    if (this.anchorUnit != tokenUnit.anchorUnit) {
+      tokenUnit = tokenUnit.to(this.anchorUnit)
+    }
+
+    return new TokenUnit(
+      this.scaleFromNominal(
+        this.anchorAmount.add(tokenUnit.anchorAmount),
+        this.scaleAndNominalUnitData.to_anchor
+      ),
+      this.scaledUnit
+    )
+  }
+
+  /**
+  * sub(tokenUnit)
+  * A facade method for subtract()
+  *
+  * @param {TokenUnit} tokenUnit The TokenUnit to subtract from the base
+  * @return {TokenUnit} A new instance of TokenUnit with the result of the
+  *     subtract
+  */
+  sub(tokenUnit) {
+    return this.subtract(tokenUnit)
+  }
+
+  /**
+  * subtract(tokenUnit)
+  * Subtract a TokenUnit from the base TokenUnit and return a new instance of
+  * TokenUnit
+  *
+  * @param {TokenUnit} tokenUnit The TokenUnit to subtract from the base
+  * @return {TokenUnit} A new instance of TokenUnit with the result of the
+  *     subtract
+  */
+  subtract(tokenUnit) {
+    if (!tokenUnit instanceof TokenUnit) {
+      throw new Error("Argument passed in must be a TokenUnit type")
+    }
+
+    if (this.anchorUnit != tokenUnit.anchorUnit) {
+      tokenUnit = tokenUnit.to(this.anchorUnit)
+    }
+
+    return new TokenUnit(
+      this.scaleFromNominal(
+        this.anchorAmount.sub(tokenUnit.anchorAmount),
+        this.scaleAndNominalUnitData.to_anchor
+      ),
+      this.scaledUnit
+    )
+  }
+
+  /**
+  * toString()
+  * Useful for console logging just the important parts
+  *
+  * @return {object} It actually returns an object though
+  */
   toString() {
     return {
-      prettyUnit: this.unitData.name,
-      prettyAmount: this.prettyAmount.toString(),
-      unit: this.unitData.anchor,
-      amount: this.amount.toString(),
+      scaledUnit: this.scaleAndNominalUnitData.name,
+      scaledAmount: this.scaledAmount.toString(),
+      anchorUnit: this.scaleAndNominalUnitData.anchor,
+      anchorAmount: this.anchorAmount.toString(),
       etherEquivalent: this.etherEquivalent.toString()
     }
+  }
+
+  /**
+  * get(key)
+  * A simple getter function to make accessing parts of the TokenUnit easier
+  *
+  * @param {string} key The key to get from the TokenUnit
+  * @return {string|number} The value of the key
+  */
+  get(key) {
+    return this.toString()[key]
   }
 }
 

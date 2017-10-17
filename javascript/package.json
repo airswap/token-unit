@@ -1,7 +1,7 @@
 {
   "name": "token-unit",
   "version": "1.0.0",
-  "description": "Utilize a TokenUnit as a primative type",
+  "description": "Convert between token units and ether units",
   "main": "test.js",
   "directories": {
     "lib": "lib"
@@ -9,8 +9,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "AirSwap",
-  "license": "ISC",
+  "author": "AirSwap.io",
+  "license": "MIT",
   "dependencies": {
     "big.js": "^5.0.2",
     "lodash": "^4.17.4",
