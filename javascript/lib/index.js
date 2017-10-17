@@ -14,6 +14,7 @@ const tokens = _.values(require('require-all')({
 }))
 const big = require('big.js')
 
+
 /**
 * TokenUnit(amount, unit)
 * @param {number} amount The number amount of tokens in the unit specified
@@ -22,6 +23,12 @@ const big = require('big.js')
 */
 class TokenUnit {
   constructor(amount, unit, options = {}) {
+    big.DP = 32 // We can handle 32 decimal places by default
+
+    if (options.big && options.big.DP) {
+      big.DP = options.big.DP
+    }
+
     if (!big(amount) || !unit) {
       throw new Error("Please provide an amount and unit during construction")
     }
