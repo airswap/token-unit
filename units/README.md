@@ -22,9 +22,9 @@ Adding a new Token to this library is fairly simple as all Tokens follow the sam
 			"to_anchor": 1
 		},
 		{
-      "name": "dollar",
-      "to_anchor": 100
-    }, ...
+			"name": "dollar",
+			"to_anchor": 100
+		}, ...
 	]
 }
 ```
