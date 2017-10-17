@@ -12,6 +12,7 @@
   "author": "AirSwap",
   "license": "ISC",
   "dependencies": {
+    "big.js": "^5.0.2",
     "lodash": "^4.17.4",
     "require-all": "^2.2.0"
   }

@@ -7,6 +7,7 @@ const _ = require('lodash')
 const tokens = _.values(require('require-all')({
   dirname: __dirname + unitDirectory
 }))
+const big = require('big.js')
 
 class TokenUnit {
   constructor(amount, unit) {
@@ -16,10 +17,10 @@ class TokenUnit {
 
     this.unitData = this.getUnit(unit)
     this.prettyUnit = this.unitData.name
-    this.prettyAmount = amount
+    this.prettyAmount = big(amount)
     this.unit = this.unitData.anchor
-    this.amount = this.convertToAnchor(this.prettyAmount, this.unitData)
-    this.ether_equivalent = this.findEtherEquivalent(this.amount, this.unitData)
+    this.amount = big(this.convertToAnchor(this.prettyAmount, this.unitData))
+    this.ether_equivalent = big(this.findEtherEquivalent(this.amount, this.unitData))
   }
 
   getUnit(unit) {
@@ -34,9 +35,9 @@ class TokenUnit {
 
     return {
       name: unitData.name,
-      to_anchor: unitData.to_anchor,
+      to_anchor: big(unitData.to_anchor),
       anchor: tokenFile.anchor,
-      starting_anchor_to_ether: tokenFile.starting_anchor_to_ether,
+      starting_anchor_to_ether: big(tokenFile.starting_anchor_to_ether),
       unit: tokenFile.unit
     }
   }
@@ -46,40 +47,66 @@ class TokenUnit {
   }
 
   findEtherEquivalent(amount, unitData) {
-    return 0
+    // find the Ether Equivalent of the currency right now for quick display
+    return amount * this.unitAnchorToEther(unitData) // until we add Oracle
+  }
+
+  unitAnchorToEther(unit) {
+    return big(unit.starting_anchor_to_ether).toString()
+    // TODO
+    // This is the function that should call the current market
+    // price for the TokenUnit / ETH exchange.
+    // It should return the value of 1 Anchor Unit in terms of ETH's ether
+    // To discuss: do we want to peg this to ether or wei?
   }
 
   to(unit) {
-    const asUnitData = this.getUnit(unit)
+    const toUnitData = this.getUnit(unit)
 
-    if (this.unitData.unit == asUnitData.unit) {
+    if (this.unitData.unit == toUnitData.unit) {
       // we are just scaling the current unit
       return {
-        amount: this.scaleUnit(this.amount, asUnitData.to_anchor),
-        name: asUnitData.name,
-        unit: asUnitData.unit
+        amount: this.scaleUnit(this.amount, toUnitData.to_anchor),
+        name: toUnitData.name,
+        unit: toUnitData.unit
       }
     } else {
       // this is a price transformation as well as scale
+      // const to_anchor_to_ether_to_wei =
+      //   this.scaleUnit(1, this.getUnit('ether').to_anchor) * this.unitAnchorToEther(toUnitData)
+      // console.log('TO ANCHOR TO ETHER TO WEI', to_anchor_to_ether_to_wei)
+      // const from_anchor_to_ether_to_wei =
+      //   this.scaleUnit(1, this.unitData.to_anchor) * this.unitAnchorToEther(this.unitData)
+      // console.log('FROM ANCHOR TO ETHER TO WEI', from_anchor_to_ether_to_wei)
+      // var anchorValue =
+      //   this.amount *
+      //   from_anchor_to_ether_to_wei /
+      //   to_anchor_to_ether_to_wei
+      var fromAmountToEther = this.amount * this.unitAnchorToEther(this.unitData)
+      // console.log(fromAmountToEther)
+      var fromEtherToTokenAnchor = big(fromAmountToEther).div(this.unitAnchorToEther(toUnitData))
+      // console.log(this.unitAnchorToEther(toUnitData).toString())
+      // console.log(fromEtherToTokenAnchor.toString())
+
+      return {
+        amount: this.scaleUnit(fromEtherToTokenAnchor, toUnitData.to_anchor),
+        name: toUnitData.name,
+        unit: toUnitData.unit
+      }
     }
   }
 
   scaleUnit(amount, to_anchor) {
-    return amount / to_anchor
-  }
-
-  valueOf() {
-    return this.amount || null
+    return big(amount).div(big(to_anchor)).toString()
   }
 
   toString() {
     return {
-      unitData: this.unitData,
       prettyUnit: this.unitData.name,
-      prettyAmount: this.prettyAmount,
+      prettyAmount: this.prettyAmount.toString(),
       unit: this.unitData.anchor,
-      amount: this.amount,
-      ether_equivalent: this.ether_equivalent
+      amount: this.amount.toString(),
+      ether_equivalent: this.ether_equivalent.toString()
     }
   }
 }
