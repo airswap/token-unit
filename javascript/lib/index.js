@@ -20,7 +20,7 @@ class TokenUnit {
     this.prettyAmount = big(amount)
     this.unit = this.unitData.anchor
     this.amount = big(this.convertToAnchor(this.prettyAmount, this.unitData))
-    this.ether_equivalent = big(this.findEtherEquivalent(this.amount, this.unitData))
+    this.etherEquivalent = big(this.findEtherEquivalent(this.amount, this.unitData))
   }
 
   getUnit(unit) {
@@ -48,11 +48,14 @@ class TokenUnit {
 
   findEtherEquivalent(amount, unitData) {
     // find the Ether Equivalent of the currency right now for quick display
-    return amount * this.unitAnchorToEther(unitData) // until we add Oracle
+    return amount * this.unitAnchorToEther(unitData).price // until we add Oracle
   }
 
   unitAnchorToEther(unit) {
-    return big(unit.starting_anchor_to_ether).toString()
+    return {
+      price: big(unit.starting_anchor_to_ether).toString(),
+      time: Date.now()
+    }
     // TODO
     // This is the function that should call the current market
     // price for the TokenUnit / ETH exchange.
@@ -82,16 +85,19 @@ class TokenUnit {
       //   this.amount *
       //   from_anchor_to_ether_to_wei /
       //   to_anchor_to_ether_to_wei
-      var fromAmountToEther = this.amount * this.unitAnchorToEther(this.unitData)
-      // console.log(fromAmountToEther)
-      var fromEtherToTokenAnchor = big(fromAmountToEther).div(this.unitAnchorToEther(toUnitData))
+      var marketQuoteFrom = this.unitAnchorToEther(this.unitData)
+      var fromAmountToEther = big(this.amount).times(marketQuoteFrom.price)
+      var marketQuoteTo = this.unitAnchorToEther(toUnitData)
+      var fromEtherToTokenAnchor = big(fromAmountToEther).div(marketQuoteTo.price)
       // console.log(this.unitAnchorToEther(toUnitData).toString())
       // console.log(fromEtherToTokenAnchor.toString())
 
       return {
         amount: this.scaleUnit(fromEtherToTokenAnchor, toUnitData.to_anchor),
         name: toUnitData.name,
-        unit: toUnitData.unit
+        unit: toUnitData.unit,
+        quoteFromTime: marketQuoteFrom.time,
+        quoteToTime: marketQuoteTo.time
       }
     }
   }
@@ -106,7 +112,7 @@ class TokenUnit {
       prettyAmount: this.prettyAmount.toString(),
       unit: this.unitData.anchor,
       amount: this.amount.toString(),
-      ether_equivalent: this.ether_equivalent.toString()
+      etherEquivalent: this.etherEquivalent.toString()
     }
   }
 }
