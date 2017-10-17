@@ -49,7 +49,7 @@ class TokenUnit {
       ))
 
     // Include quote times here if applicable
-    if (options) {
+    if (options.quoteFromTime && options.quoteToTime) {
       this.quoteFromTime = options.quoteFromTime
       this.quoteToTime = options.quoteToTime
     }
