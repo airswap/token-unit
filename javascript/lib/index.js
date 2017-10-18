@@ -1,5 +1,5 @@
 /**
-* TokenUnit v0.1.0
+* TokenUnit v0.1.5
 * Convert between token units and ether units
 * (c) 2017 Airswap
 * airswap.io
@@ -9,11 +9,20 @@
 const fs = require('fs')
 const unitDirectory = '/../../units'
 const _ = require('lodash')
-const tokens = _.values(require('require-all')({
-  dirname: __dirname + unitDirectory
-}))
 const big = require('big.js')
 
+var tokens = []
+
+if (typeof fs.readdirSync === "function") { // We are running on NodeJS
+  tokens = _.values(require('require-all')({
+    dirname: __dirname + '/' + unitDirectory
+  }))
+} else { // We may be on React
+  tokens = [
+    require(unitDirectory + '/ether.json'),
+    require(unitDirectory + '/ast.json')
+  ]
+}
 
 /**
 * TokenUnit(amount, unit)

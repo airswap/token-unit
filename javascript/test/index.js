@@ -1,5 +1,7 @@
 const assert = require('assert')
-const TokenUnit = require('./../lib/index.js')
+//const TokenUnit = require('./../lib/index.js')
+const TokenUnit = require('./../build/index.js')
+//const TokenUnit = require('test-token-unit')
 
 describe('TokenUnit', () => {
   describe('Set Up Tests', () => {

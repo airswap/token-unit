@@ -1,10 +1,12 @@
 {
   "name": "token-unit",
-  "version": "0.1.0",
+  "version": "0.1.5",
   "description": "Convert between token units and ether units",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "build": "gulp build && mocha",
+    "release": "gulp build && mocha && npm publish build"
   },
   "author": "AirSwap.io",
   "license": "MIT",
@@ -14,6 +16,28 @@
     "require-all": "^2.2.0"
   },
   "devDependencies": {
+    "del": "^3.0.0",
+    "gulp": "^3.9.1",
+    "gulp-replace": "^0.6.1",
     "mocha": "^4.0.1"
-  }
+  },
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/airswap/token-unit/tree/master/javascript"
+  },
+  "keywords": [
+    "ethereum",
+    "token",
+    "conversion",
+    "wei",
+    "ether",
+    "web3",
+    "erc20",
+    "token",
+    "token"
+  ]
 }

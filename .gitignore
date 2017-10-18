@@ -32,3 +32,6 @@ python/modules/
 # eDelivery Release directory
 ./deliver/releases/
 ./deliver/releases/**
+
+javascript/build/**
+javascript/build/
