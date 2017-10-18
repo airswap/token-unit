@@ -6,22 +6,22 @@ Tie to the ETH standard based on a X Token Unit = Y ETH Unit
 
 Support commonly used languages
 
-- Python
-- Javascript
-- Elixir
+- Javascript (done)
+- Python (not started)
+- Elixir (not started)
 
-### Function Signature
+### Suggested Function Signature
 
-`TokenConvert(int value, string fromUnit, string toUnit)`
+`TokenUnit(int value, string fromUnit, string toUnit)`
 
-## Example Usage
+## Suggested Usage
 
 ```
-TokenConvert(123, 'AST', 'ether') # Results in 123 AST being shown in ETH Ether equivalent
-TokenConvert(123, 'AST') # Results in 123 AST being shown in wei
-TokenConvert(123, 'AST', 'AIR') # Results in 123 AST being shown as AIR
-TokenConvert(123, 'ether', 'wei') # Results in 123 ETH being shown in wei
-TokenConvert(TokenConvert(123, 'AST', 'AIR'), 'AIR') # Gives the value of 123 AST in wei, but with an intermediate AIR translation, for example if the inner value is being transmitted via an API call
+TokenUnit(123, 'AST', 'ether') # Results in 123 AST being shown in ETH Ether equivalent
+TokenUnit(123, 'AST') # Results in 123 AST being shown in wei
+TokenUnit(123, 'AST', 'AIR') # Results in 123 AST being shown as AIR
+TokenUnit(123, 'ether', 'wei') # Results in 123 ETH being shown in wei
+TokenUnit(TokenUnit(123, 'AST', 'AIR'), 'AIR') # Gives the value of 123 AST in wei, but with an intermediate AIR translation, for example if the inner value is being transmitted via an API call
 ```
 
 ## Javascript Usage
@@ -34,4 +34,4 @@ The NPM package is [here](https://www.npmjs.com/package/token-unit)
 
 Ease of inputting values and denominations
 Shortest path between units
-String matching based on UPPER value
+Real time exchange extensions
