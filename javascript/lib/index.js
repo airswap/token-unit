@@ -1,5 +1,5 @@
 /**
-* TokenUnit v0.1.5
+* TokenUnit v0.1.6
 * Convert between token units and ether units
 * (c) 2017 Airswap
 * airswap.io
@@ -135,7 +135,7 @@ class TokenUnit {
   * anchorToEther(nominalUnit)
   * Convert the nominal units to ether, based on either (currently only)
   * the starting, JSON-pegged amount of nominal units to ether or
-  * (eventually) the exchange price provided by the passed in Exchange class
+  * (eventually) the Oracle-provided price provided by the passed in Oracle class
   *
   * @param {object} nominalUnit The object nominal unit information, likely from
   *     getScaleAndNominalUnit()
@@ -145,7 +145,7 @@ class TokenUnit {
   anchorToEther(nominalUnit) {
     // TODO
     // This is the function that should call the current market
-    // price for the TokenUnit / ETH exchange.
+    // price via Oracle for the TokenUnit / ETH pair.
     // It should return the value of 1 Nominal Unit in terms of ETH's ether
     // To discuss: do we want to peg this to ether or wei?
 

@@ -1,7 +1,9 @@
 # TokenUnit Library
 
 For X unit of token, show the corresponding value in wei, gwei, finney, ether, etc.
+
 For Y ETH, show the corresponding value of token in unit A, unit B, unit C, etc.
+
 Tie to the ETH standard based on a X Token Unit = Y ETH Unit
 
 Support commonly used languages
@@ -32,6 +34,6 @@ The NPM package is [here](https://www.npmjs.com/package/token-unit)
 
 ## Library goals
 
-Ease of inputting values and denominations
-Shortest path between units
-Real time exchange extensions
+* Ease of inputting values and denominations
+* Shortest path between units
+* Real time Oracle (price discovery) extensions

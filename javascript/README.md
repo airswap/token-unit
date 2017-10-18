@@ -1,6 +1,6 @@
 # TokenUnit Javascript Library
 
-TokenUnit is a conversion library for Ethereum-based tokens to easily scale tokens and convert between tokens and ether. Future releases will include the ability to convert between tokens at exchange-listed prices based on passing in an Exchange class.
+TokenUnit is a conversion library for Ethereum-based tokens to easily scale tokens and convert between tokens and ether. Future releases will include the ability to convert between tokens at real-time prices based on passing in an Oracle class.
 
 
 ## Installation
