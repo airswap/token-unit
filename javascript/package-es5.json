@@ -1,13 +1,12 @@
 {
-  "name": "token-unit",
+  "name": "token-unit-es5",
   "version": "0.1.7",
-  "description": "Convert between token units and ether units",
-  "main": "index.js",
+  "description": "Convert between token units and ether units (ES5 compatible)",
+  "main": "es5index.js",
   "scripts": {
     "test": "mocha",
     "build": "gulp build && mocha",
-    "release": "gulp build && mocha && npm publish build",
-    "release-es5": "gulp build-es5 && mocha && npm publish build-es5"
+    "release": "gulp build && mocha && npm publish build"
   },
   "author": "AirSwap.io",
   "license": "MIT",
@@ -19,7 +18,6 @@
   "devDependencies": {
     "del": "^3.0.0",
     "gulp": "^3.9.1",
-    "gulp-rename": "^1.2.2",
     "gulp-replace": "^0.6.1",
     "mocha": "^4.0.1"
   },

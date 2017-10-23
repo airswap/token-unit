@@ -35,3 +35,5 @@ python/modules/
 
 javascript/build/**
 javascript/build/
+javascript/build-es5/**
+javascript/build-es5/

@@ -44,6 +44,10 @@ We treat the calling object as immutable, hence all public methods return new in
 * `toString()`: Output the minimal information needed for console logging. It actually returns an object.
 * `get(key)`: Get a specific key from the `toString()` object. Useful if you want to display the data.
 
+## ES5 or ES6?
+
+Since we made this library compatible with both NodeJS and React, we realized that there is an issue with Webpack and ES6 files. To solve this, we released an ES5 compatible version of the library. You can find the ES5 library [here](https://www.npmjs.com/package/token-unit-es5). Or use the ES6 library [here](https://www.npmjs.com/package/token-unit).
+
 ## Questions or comments?
 
 Reach out to the Airswap team at team@airswap.io with any questions or comments. We welcome well-constructed PRs into this library.
