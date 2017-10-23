@@ -51,7 +51,7 @@ We treat the calling object as immutable, hence all public methods return new in
 
 ## ES5 or ES6?
 
-Since we made this library compatible with both NodeJS and React, we realized that there is an issue with Webpack and ES6 files. To solve this, we released an ES5 compatible version of the library. You can find the ES5 library [here](https://www.npmjs.com/package/token-unit-es5). Or use the ES6 library [here](https://www.npmjs.com/package/token-unit).
+Since we made this library compatible with both NodeJS and React, we realized that there is an issue with Webpack and ES6 files. To solve this, we released an ES5 compatible version of the library as v0.2.1. Moving forward, we will transpile our ES6 code to ES5 standards for publishing on NPM.
 
 ## Questions or comments?
 

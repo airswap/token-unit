@@ -1,13 +1,13 @@
 {
   "name": "token-unit",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Convert between token units and ether units",
   "main": "index.js",
   "scripts": {
     "test": "mocha",
-    "build": "gulp build && mocha",
-    "release": "gulp build && mocha && npm publish build",
-    "release-es5": "gulp build-es5 && mocha && npm publish build-es5"
+    "compile": "babel --source-maps -d lib/ src/",
+    "build": "npm run compile && gulp build && mocha",
+    "release": "npm run compile && gulp build && mocha && npm publish build"
   },
   "author": "AirSwap.io",
   "license": "MIT",
@@ -17,6 +17,8 @@
     "require-all": "^2.2.0"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
     "del": "^3.0.0",
     "gulp": "^3.9.1",
     "gulp-rename": "^1.2.2",
