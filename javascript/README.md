@@ -17,7 +17,7 @@ $ npm install --save token-unit-es5
 ```javascript
 const TokenUnit = require('token-unit');
 // Or for ES5 compatible, use:
-// var TokenUnit = require('token-unit');
+// var TokenUnit = require('token-unit-es5');
 
 let purchaseValue = new TokenUnit(10, 'ether');
 let myTokenAmount = purchaseValue.to('myToken');
