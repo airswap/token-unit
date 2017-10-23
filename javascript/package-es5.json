@@ -1,6 +1,6 @@
 {
   "name": "token-unit-es5",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Convert between token units and ether units (ES5 compatible)",
   "main": "es5index.js",
   "scripts": {

@@ -5,7 +5,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
-* TokenUnit v0.1.7
+* TokenUnit v0.1.8
 * Convert between token units and ether units. ES5 compatible.
 * (c) 2017 Airswap
 * airswap.io

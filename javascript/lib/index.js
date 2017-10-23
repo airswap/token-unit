@@ -1,5 +1,5 @@
 /**
-* TokenUnit v0.1.7
+* TokenUnit v0.1.8
 * Convert between token units and ether units
 * (c) 2017 Airswap
 * airswap.io

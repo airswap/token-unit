@@ -7,17 +7,22 @@ TokenUnit is a conversion library for Ethereum-based tokens to easily scale toke
 
 ```bash
 $ npm install --save token-unit
+
+If you want the ES5 version, use:
+$ npm install --save token-unit-es5
 ```
 
 ## Usage
 
 ```javascript
-const TokenUnit = require('token-unit')
+const TokenUnit = require('token-unit');
+// Or for ES5 compatible, use:
+// var TokenUnit = require('token-unit');
 
-var purchaseValue = new TokenUnit(10, 'ether')
-var myTokenAmount = purchaseValue.to('myToken')
-var newAmount = myTokenAmount.add(new TokenUnit(200, 'kwei'))
-var executeOrderAmount = newAmount.get('anchorAmount')
+let purchaseValue = new TokenUnit(10, 'ether');
+let myTokenAmount = purchaseValue.to('myToken');
+let newAmount = myTokenAmount.add(new TokenUnit(200, 'kwei'));
+let executeOrderAmount = newAmount.get('anchorAmount');
 ```
 
 ## Public Object
