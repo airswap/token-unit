@@ -97,12 +97,12 @@ describe('TokenUnit', () => {
       assert.equal(testToken.get('anchorUnit'), 'wei')
       assert.equal(testToken.get('anchorAmount'), '120')
     })
-    it('should show that 0.00012 wei is 0.00000000000000000000000000000000012 tether', () => {
-      var testToken = new TokenUnit(0.00012, 'wei', {big: {DP: 100}}).to('tether')
-      assert.equal(testToken.get('scaledAmount'), '1.2e-34')
+    it('should show that 0.00012 wei is 0.000000000000000000000000000001 tether', () => {
+      var testToken = new TokenUnit(1, 'wei', {big: {DP: 100}}).to('tether')
+      assert.equal(testToken.get('scaledAmount'), '1e-30')
       assert.equal(testToken.get('scaledUnit'), 'tether')
       assert.equal(testToken.get('anchorUnit'), 'wei')
-      assert.equal(testToken.get('anchorAmount'), '0.00012')
+      assert.equal(testToken.get('anchorAmount'), '1')
     })
     it('should show that -10 kether is -10000000000000000 mwei/babbage/picoether', () => {
       var testToken = new TokenUnit(-10, 'kether').to('mwei')
