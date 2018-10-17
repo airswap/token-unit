@@ -13,7 +13,8 @@
   "license": "MIT",
   "dependencies": {
     "big.js": "^5.0.2",
-    "lodash": "^4.17.4",
+    "lodash": ">=4.17.5",
+    "randomatic": ">=3.0.0",
     "require-all": "^2.2.0"
   },
   "devDependencies": {
